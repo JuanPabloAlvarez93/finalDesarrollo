@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EFModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="ALUMNOS">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NOMBRE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="APELLIDOS" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CARNET" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="IDCURSO" Type="Int32" />
+    <Property Name="ESTADO" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="CURSO" Relationship="Self.FK_ALUMNOS_CURSO" FromRole="ALUMNOS" ToRole="CURSO" />
+  </EntityType>
+  <EntityType Name="CURSO">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NOMBRE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="ALUMNOS" Relationship="Self.FK_ALUMNOS_CURSO" FromRole="CURSO" ToRole="ALUMNOS" />
+    <NavigationProperty Name="NOTAS" Relationship="Self.FK_NOTAS_CURSO" FromRole="CURSO" ToRole="NOTAS" />
+  </EntityType>
+  <EntityType Name="NOTAS">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NOTA" Type="Int32" />
+    <Property Name="IDCURSO" Type="Int32" />
+    <Property Name="ESTADO" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+    <NavigationProperty Name="CURSO" Relationship="Self.FK_NOTAS_CURSO" FromRole="NOTAS" ToRole="CURSO" />
+  </EntityType>
+  <Association Name="FK_ALUMNOS_CURSO">
+    <End Role="CURSO" Type="Self.CURSO" Multiplicity="0..1" />
+    <End Role="ALUMNOS" Type="Self.ALUMNOS" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CURSO">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ALUMNOS">
+        <PropertyRef Name="IDCURSO" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_NOTAS_CURSO">
+    <End Role="CURSO" Type="Self.CURSO" Multiplicity="0..1" />
+    <End Role="NOTAS" Type="Self.NOTAS" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CURSO">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NOTAS">
+        <PropertyRef Name="IDCURSO" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="EFEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="ALUMNOS" EntityType="Self.ALUMNOS" />
+    <EntitySet Name="CURSO" EntityType="Self.CURSO" />
+    <EntitySet Name="NOTAS" EntityType="Self.NOTAS" />
+    <AssociationSet Name="FK_ALUMNOS_CURSO" Association="Self.FK_ALUMNOS_CURSO">
+      <End Role="CURSO" EntitySet="CURSO" />
+      <End Role="ALUMNOS" EntitySet="ALUMNOS" />
+    </AssociationSet>
+    <AssociationSet Name="FK_NOTAS_CURSO" Association="Self.FK_NOTAS_CURSO">
+      <End Role="CURSO" EntitySet="CURSO" />
+      <End Role="NOTAS" EntitySet="NOTAS" />
+    </AssociationSet>
+    <FunctionImport Name="SP_ALUMNOS" ReturnType="Collection(EFModel.SP_ALUMNOS_Result)">
+      <Parameter Name="ID" Mode="In" Type="Int32" />
+      <Parameter Name="NOMBRE" Mode="In" Type="String" />
+      <Parameter Name="APELLIDO" Mode="In" Type="String" />
+      <Parameter Name="CARNET" Mode="In" Type="String" />
+      <Parameter Name="IDCURSO" Mode="In" Type="Int32" />
+      <Parameter Name="ESTADO" Mode="In" Type="String" />
+      <Parameter Name="OPTIONS" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="SP_CURSOS" ReturnType="Collection(EFModel.SP_CURSOS_Result)">
+      <Parameter Name="ID" Mode="In" Type="Int32" />
+      <Parameter Name="NOMBRE" Mode="In" Type="String" />
+      <Parameter Name="OPTIONS" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="SP_NOTA" ReturnType="Collection(EFModel.SP_NOTA_Result)">
+      <Parameter Name="ID" Mode="In" Type="Int32" />
+      <Parameter Name="NOTA" Mode="In" Type="Int32" />
+      <Parameter Name="IDCURSO" Mode="In" Type="Int32" />
+      <Parameter Name="OPTIONS" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="SP_AL_ACTIVO" ReturnType="Collection(EFModel.SP_AL_ACTIVO_Result)" />
+  </EntityContainer>
+  <ComplexType Name="SP_ALUMNOS_Result">
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="NOMBRE" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="APELLIDOS" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="CARNET" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="IDCURSO" Nullable="true" />
+    <Property Type="String" Name="ESTADO" Nullable="true" MaxLength="1" />
+  </ComplexType>
+  <ComplexType Name="SP_CURSOS_Result">
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="NOMBRE" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="SP_NOTA_Result">
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="Int32" Name="NOTA" Nullable="true" />
+    <Property Type="Int32" Name="IDCURSO" Nullable="true" />
+    <Property Type="String" Name="ESTADO" Nullable="false" MaxLength="9" />
+  </ComplexType>
+  <ComplexType Name="SP_AL_ACTIVO_Result">
+    <Property Type="String" Name="NOMBRE" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="APELLIDOS" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="CARNET" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="NOMBRE1" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="NOTA" Nullable="true" />
+    <Property Type="String" Name="ESTADO" Nullable="false" MaxLength="9" />
+  </ComplexType>
+</Schema>

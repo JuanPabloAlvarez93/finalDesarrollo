@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EFModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="ALUMNOS">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NOMBRE" Type="varchar" MaxLength="50" />
+    <Property Name="APELLIDOS" Type="varchar" MaxLength="50" />
+    <Property Name="CARNET" Type="varchar" MaxLength="50" />
+    <Property Name="IDCURSO" Type="int" />
+    <Property Name="ESTADO" Type="varchar" MaxLength="1" />
+  </EntityType>
+  <EntityType Name="CURSO">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NOMBRE" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="NOTAS">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NOTA" Type="int" />
+    <Property Name="IDCURSO" Type="int" />
+    <Property Name="ESTADO" Type="varchar" MaxLength="9" StoreGeneratedPattern="Computed" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_ALUMNOS_CURSO">
+    <End Role="CURSO" Type="Self.CURSO" Multiplicity="0..1" />
+    <End Role="ALUMNOS" Type="Self.ALUMNOS" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CURSO">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ALUMNOS">
+        <PropertyRef Name="IDCURSO" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_NOTAS_CURSO">
+    <End Role="CURSO" Type="Self.CURSO" Multiplicity="0..1" />
+    <End Role="NOTAS" Type="Self.NOTAS" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CURSO">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NOTAS">
+        <PropertyRef Name="IDCURSO" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="SP_AL_ACTIVO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="SP_ALUMNOS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ID" Type="int" Mode="In" />
+    <Parameter Name="NOMBRE" Type="varchar" Mode="In" />
+    <Parameter Name="APELLIDO" Type="varchar" Mode="In" />
+    <Parameter Name="CARNET" Type="varchar" Mode="In" />
+    <Parameter Name="IDCURSO" Type="int" Mode="In" />
+    <Parameter Name="ESTADO" Type="varchar" Mode="In" />
+    <Parameter Name="OPTIONS" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="SP_CURSOS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ID" Type="int" Mode="In" />
+    <Parameter Name="NOMBRE" Type="varchar" Mode="In" />
+    <Parameter Name="OPTIONS" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="SP_NOTA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ID" Type="int" Mode="In" />
+    <Parameter Name="NOTA" Type="int" Mode="In" />
+    <Parameter Name="IDCURSO" Type="int" Mode="In" />
+    <Parameter Name="OPTIONS" Type="varchar" Mode="In" />
+  </Function>
+  <EntityContainer Name="EFModelStoreContainer">
+    <EntitySet Name="ALUMNOS" EntityType="Self.ALUMNOS" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CURSO" EntityType="Self.CURSO" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="NOTAS" EntityType="Self.NOTAS" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_ALUMNOS_CURSO" Association="Self.FK_ALUMNOS_CURSO">
+      <End Role="CURSO" EntitySet="CURSO" />
+      <End Role="ALUMNOS" EntitySet="ALUMNOS" />
+    </AssociationSet>
+    <AssociationSet Name="FK_NOTAS_CURSO" Association="Self.FK_NOTAS_CURSO">
+      <End Role="CURSO" EntitySet="CURSO" />
+      <End Role="NOTAS" EntitySet="NOTAS" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
